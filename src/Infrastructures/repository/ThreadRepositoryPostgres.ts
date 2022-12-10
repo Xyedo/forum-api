@@ -94,7 +94,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (res.rowCount === 0) {
       throw new NotFoundError("thread tidak ditemukan didatabase");
     }
-    return new AddedDetailThread({ ...res.rows[0] });
+    return new AddedDetailThread(res.rows[0]);
   }
 }
 

@@ -1,4 +1,4 @@
-name: Run Continous integration
+name: Continous integration
 
 on:
   pull_request:
