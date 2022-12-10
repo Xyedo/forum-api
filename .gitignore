@@ -3,6 +3,6 @@ package-lock.json
 .idea
 config/database/test.json
 coverage
-.dist
+dist
 .vscode
 .env

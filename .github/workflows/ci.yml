@@ -1,0 +1,57 @@
+name: Run Continous integration
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+    
+    services:
+      pg:
+        image: postgres:14.6-bullseye
+        env:
+          POSTGRES_USER: ${{ secrets.PG_TEST_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.PG_TEST_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.PG_TEST_DB }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: run migrate and test
+        run: |
+          npm install
+          npm run migrate up
+          npm run test
+        env: 
+          CI: true
+          PGHOST: ${{ secrets.PGHOST_TEST }}
+          PGUSER: ${{ secrets.PG_TEST_USER }}
+          PGDATABASE: ${{ secrets.PG_TEST_DB }}
+          PGPASSWORD: ${{ secrets.PG_TEST_PASSWORD }}
+          PGPORT: ${{ secrets.PGPORT_TEST }}
+          PGHOST_TEST: ${{ secrets.PGHOST_TEST }}
+          PGUSER_TEST: ${{ secrets.PG_TEST_USER }}
+          PGDATABASE_TEST: ${{ secrets.PG_TEST_DB }}
+          PGPASSWORD_TEST: ${{ secrets.PG_TEST_PASSWORD }}
+          PGPORT_TEST: ${{ secrets.PGPORT_TEST }}
+          ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+          REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+          ACCCESS_TOKEN_AGE: ${{ secrets.ACCCESS_TOKEN_AGE }}
+
