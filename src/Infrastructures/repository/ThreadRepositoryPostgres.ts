@@ -57,6 +57,13 @@ class ThreadRepositoryPostgres extends ThreadRepository {
             SELECT               
               c.id,
               c.content,
+              (
+                SELECT COUNT(likes)
+                FROM comment_like
+                WHERE 
+                  comment_id = c.id AND
+                  likes = TRUE
+              ) AS "likeCount",
               c.is_delete AS "isDelete",
               c.date,
               u1.username,
@@ -94,7 +101,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (res.rowCount === 0) {
       throw new NotFoundError("thread tidak ditemukan didatabase");
     }
-    return new AddedDetailThread({ ...res.rows[0] });
+    return new AddedDetailThread(res.rows[0]);
   }
 }
 

@@ -19,9 +19,12 @@ export interface DetailThread extends ThreadBody {
   comments?: DetailComment[];
 }
 interface DetailComment extends Comment {
-  replies?: Comment[];
+  replies?: Reply[];
 }
-export interface Comment {
+interface Comment extends Reply {
+  likeCount: number;
+}
+interface Reply {
   id: string;
   username: string;
   date: string;
@@ -46,6 +49,12 @@ export interface ReplyComment extends ThreadComment {
 export type TokenPayload = {
   username: string;
   id?: string;
+};
+
+export type CommentLikePayload = {
+  threadId?: string;
+  commentId?: string;
+  userId?: string;
 };
 export type Payload = { [key: string]: unknown };
 

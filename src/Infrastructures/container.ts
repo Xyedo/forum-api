@@ -13,12 +13,14 @@ import UserRepository from "../Domains/users/UserRepository";
 import ThreadRepository from "../Domains/thread/ThreadRepository";
 import CommentRepository from "../Domains/comment/CommentRepository";
 import ReplyRepository from "../Domains/reply/ReplyRepository";
+import CommentLikeRepository from "../Domains/comment-likes/CommentLikeRepository";
 import PasswordHash from "../Applications/security/PasswordHash";
 import UserRepositoryPostgres from "./repository/UserRepositoryPostgres";
 import BcryptPasswordHash from "./security/BcryptPasswordHash";
 import ThreadRepositoryPostgres from "./repository/ThreadRepositoryPostgres";
 import CommentRepositoryPostgres from "./repository/CommentRepositoryPostgres";
 import ReplyRepositoryPostgres from "./repository/ReplyRepositoryPostgres";
+import CommentLikeRepositoryPostgres from "./repository/CommentLikeRepositoryPostgres";
 
 // use case
 import AddUserUseCase from "../Applications/use_case/AddUserUseCase";
@@ -32,6 +34,7 @@ import RefreshAuthenticationUseCase from "../Applications/use_case/RefreshAuthen
 import ThreadUseCase from "../Applications/use_case/ThreadUseCase";
 import CommentUseCase from "../Applications/use_case/CommentUseCase";
 import ReplyUseCase from "../Applications/use_case/ReplyUseCase";
+import CommentLikesUseCase from "../Applications/use_case/CommentLikesUseCase";
 
 // creating container
 const container = createContainer();
@@ -123,6 +126,17 @@ container.register([
         },
         {
           concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: CommentLikeRepository.name,
+    Class: CommentLikeRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
         },
       ],
     },
@@ -250,6 +264,27 @@ container.register([
         {
           name: "replyRepository",
           internal: ReplyRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: CommentLikesUseCase.name,
+    Class: CommentLikesUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "threadRepository",
+          internal: ThreadRepository.name,
+        },
+        {
+          name: "commentRepository",
+          internal: CommentRepository.name,
+        },
+        {
+          name: "commentLikeRepository",
+          internal: CommentLikeRepository.name,
         },
       ],
     },

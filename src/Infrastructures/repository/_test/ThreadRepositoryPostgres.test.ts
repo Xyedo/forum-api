@@ -149,7 +149,7 @@ describe("ThreadRepository postgres", () => {
       expect(comment1.username).toEqual(res[0].username);
       expect(new Date(comment1.date)).toEqual(expectedComment1.date);
       expect(comment1.content).toEqual(expectedComment1.content);
-
+      expect(comment1.likeCount).toEqual(0);
       expect(comment1).not.toHaveProperty("isDelete");
 
       expect(comment2.id).toEqual(expectedComment2.id);
@@ -158,7 +158,7 @@ describe("ThreadRepository postgres", () => {
       expect(comment2.username).toEqual(res[0].username);
       expect(new Date(comment2.date)).toEqual(expectedComment2.date);
       expect(comment2.content).toEqual(expectedComment2.content);
-
+      expect(comment2.likeCount).toEqual(0);
       expect(comment2).not.toHaveProperty("isDelete");
 
       expect(comment1.replies).toHaveLength(2);
