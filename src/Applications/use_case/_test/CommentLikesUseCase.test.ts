@@ -17,16 +17,18 @@ describe("CommentLikeUseCase", () => {
       mockThreadRepo.verifyThreadAvaibility = jest
         .fn()
         .mockImplementation(() => Promise.resolve());
+
       const mockCommentRepo = new CommentRepository();
+
       mockCommentRepo.verifyCommentAvaibility = jest
         .fn()
         .mockImplementation(() => Promise.resolve());
+
       const mockCommentLikeRepo = new CommentLikeRepository();
+      
       mockCommentLikeRepo.toogleLike = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ id: "likes-123", likes: true })
-        );
+        .mockImplementation(() => Promise.resolve());
 
       const commentLikesUseCase = new CommentLikesUseCase({
         commentLikeRepository: mockCommentLikeRepo,
@@ -47,7 +49,7 @@ describe("CommentLikeUseCase", () => {
       );
       expect(mockCommentLikeRepo.toogleLike).toBeCalledWith(
         useCasePayload.userId,
-        useCasePayload.commentId,
+        useCasePayload.commentId
       );
     });
   });

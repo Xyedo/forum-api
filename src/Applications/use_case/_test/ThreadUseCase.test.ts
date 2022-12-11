@@ -62,6 +62,7 @@ describe("ThreadUseCase", () => {
             date: "2021-08-08T07:22:33.555Z",
             content: "sebuah comment",
             isDelete: true,
+            likeCount:5,
           },
           {
             id: "comment-yksuCoxM2s4MMrZJO-qVD",
@@ -69,6 +70,7 @@ describe("ThreadUseCase", () => {
             date: "2021-08-08T07:26:21.338Z",
             content: "sebuah comment yg tidak dihapus",
             isDelete: false,
+            likeCount:4,
           },
         ],
       });
