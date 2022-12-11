@@ -15,6 +15,7 @@ describe("a AddedDetailThread entities", () => {
           username: "johndoe",
           date: "2021-08-08T07:22:33.555Z",
           content: "sebuah comment",
+          likeCount: 5,
           isDelete: true,
           replies: [
             {
@@ -39,6 +40,7 @@ describe("a AddedDetailThread entities", () => {
           date: "2021-08-08T07:26:21.338Z",
           content: "comment dua",
           isDelete: false,
+          likeCount: 4,
           replies: [],
         },
       ],
@@ -50,6 +52,7 @@ describe("a AddedDetailThread entities", () => {
     expect(comments![0]).not.toHaveProperty("isDelete");
     expect(comments![1]).not.toHaveProperty("isDelete");
     expect(comments![0].content).toEqual("**komentar telah dihapus**");
+    expect(comments![0].likeCount).toEqual(5);
     expect(comments![1].content).toEqual(payload.comments[1].content);
     const { replies } = comments![0];
     expect(replies![0]).not.toHaveProperty("isDelete");

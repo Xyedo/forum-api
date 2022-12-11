@@ -5,11 +5,13 @@ import NewThread from "../../../Domains/thread/entities/NewThread";
 import pool from "../../database/postgres/pool";
 import ThreadRepository from "../ThreadRepositoryPostgres";
 import NotFoundError from "../../../Commons/exceptions/NotFoundError";
+import CommentLikeTestHelper from "../../../../tests/CommentLikeTestHelper";
 
 describe("ThreadRepository postgres", () => {
   afterEach(async () => {
     await ThreadTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await CommentLikeTestHelper.cleanTable();
   });
   afterAll(async () => {
     await pool.end();
@@ -100,6 +102,12 @@ describe("ThreadRepository postgres", () => {
         date: new Date(),
       };
       await ThreadTableTestHelper.addNewComment(expectedComment1);
+      await CommentLikeTestHelper.toogleLikes(
+        expectedComment1.id,
+        expectedComment1.userId
+      );
+      await UsersTableTestHelper.addUser({ id: "user-124", username: "xyedo" });
+      await CommentLikeTestHelper.toogleLikes(expectedComment1.id, "user-124");
       const expectedComment2 = {
         id: "comment-321",
         threadId: "thread-123",
@@ -149,7 +157,7 @@ describe("ThreadRepository postgres", () => {
       expect(comment1.username).toEqual(res[0].username);
       expect(new Date(comment1.date)).toEqual(expectedComment1.date);
       expect(comment1.content).toEqual(expectedComment1.content);
-
+      expect(comment1.likeCount).toEqual(2);
       expect(comment1).not.toHaveProperty("isDelete");
 
       expect(comment2.id).toEqual(expectedComment2.id);
@@ -158,7 +166,7 @@ describe("ThreadRepository postgres", () => {
       expect(comment2.username).toEqual(res[0].username);
       expect(new Date(comment2.date)).toEqual(expectedComment2.date);
       expect(comment2.content).toEqual(expectedComment2.content);
-
+      expect(comment2.likeCount).toEqual(0);
       expect(comment2).not.toHaveProperty("isDelete");
 
       expect(comment1.replies).toHaveLength(2);

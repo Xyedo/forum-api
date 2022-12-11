@@ -50,6 +50,16 @@ const routes = (
     },
   },
   {
+    method: "PUT",
+    path: "/threads/{threadId}/comments/{commentId}/likes",
+    handler: handler.putCommentLikeHandler,
+    options: {
+      auth: {
+        strategy: "restricted_res",
+      },
+    },
+  },
+  {
     method: "DELETE",
     path: "/threads/{threadId}/comments/{commentId}/replies/{replyId}",
     handler: handler.deleteReplyByIdHandler,

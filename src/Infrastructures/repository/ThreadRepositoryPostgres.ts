@@ -57,6 +57,13 @@ class ThreadRepositoryPostgres extends ThreadRepository {
             SELECT               
               c.id,
               c.content,
+              (
+                SELECT COUNT(likes)
+                FROM comment_like
+                WHERE 
+                  comment_id = c.id AND
+                  likes = TRUE
+              ) AS "likeCount",
               c.is_delete AS "isDelete",
               c.date,
               u1.username,

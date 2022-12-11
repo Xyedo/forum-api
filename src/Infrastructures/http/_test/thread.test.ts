@@ -285,7 +285,7 @@ describe("/threads endpoint", () => {
       expect(respJson.message).toBeDefined();
     });
   });
-  const setup = async (
+  const setupTillComment = async (
     server: Server
   ): Promise<{
     commentId: string;
@@ -369,7 +369,7 @@ describe("/threads endpoint", () => {
         threadId,
         commentId,
         accessToken: commenterAccessToken,
-      } = await setup(server);
+      } = await setupTillComment(server);
 
       // action
       const resp = await server.inject({
@@ -387,9 +387,8 @@ describe("/threads endpoint", () => {
     it("should return 404 when invalid comment", async () => {
       // arrange
       const server = await createServer(container);
-      const { threadId, accessToken: commenterAccessToken } = await setup(
-        server
-      );
+      const { threadId, accessToken: commenterAccessToken } =
+        await setupTillComment(server);
 
       // action
       const resp = await server.inject({
@@ -408,9 +407,8 @@ describe("/threads endpoint", () => {
     it("should return 404 when invalid thread", async () => {
       // arrange
       const server = await createServer(container);
-      const { commentId, accessToken: commenterAccessToken } = await setup(
-        server
-      );
+      const { commentId, accessToken: commenterAccessToken } =
+        await setupTillComment(server);
 
       // action
       const resp = await server.inject({
@@ -429,7 +427,7 @@ describe("/threads endpoint", () => {
     it("should return 403 when forbidden delete another user comment", async () => {
       // arrange
       const server = await createServer(container);
-      const { threadId, commentId } = await setup(server);
+      const { threadId, commentId } = await setupTillComment(server);
       // login to get accessToken
       const loginResponse = await server.inject({
         method: "POST",
@@ -458,7 +456,7 @@ describe("/threads endpoint", () => {
     it("should return 201 when all valid", async () => {
       // arrange
       const server = await createServer(container);
-      const { commentId, threadId } = await setup(server);
+      const { commentId, threadId } = await setupTillComment(server);
       // login to get accessToken
       const loginResponse = await server.inject({
         method: "POST",
@@ -492,7 +490,7 @@ describe("/threads endpoint", () => {
     it("should return 404 when threadId is not found", async () => {
       // arrange
       const server = await createServer(container);
-      const { commentId } = await setup(server);
+      const { commentId } = await setupTillComment(server);
       // login to get accessToken
       const loginResponse = await server.inject({
         method: "POST",
@@ -522,7 +520,7 @@ describe("/threads endpoint", () => {
     it("should return 404 when commentId is not found", async () => {
       // arrange
       const server = await createServer(container);
-      const { threadId } = await setup(server);
+      const { threadId } = await setupTillComment(server);
       // login to get accessToken
       const loginResponse = await server.inject({
         method: "POST",
@@ -553,7 +551,7 @@ describe("/threads endpoint", () => {
     it("should return 400 when payload didnt match the req", async () => {
       // arrange
       const server = await createServer(container);
-      const { commentId, threadId } = await setup(server);
+      const { commentId, threadId } = await setupTillComment(server);
       // login to get accessToken
       const loginResponse = await server.inject({
         method: "POST",
@@ -782,6 +780,25 @@ describe("/threads endpoint", () => {
         url: `/threads/hahahahah`,
       });
       expect(resp.statusCode).toEqual(404);
+    });
+  });
+
+  describe("when PUT /threads/{threadId}/comments/{commentId}/likes", () => {
+    it("should return 200 when likes", async () => {
+      const server = await createServer(container);
+      const { accessToken, commentId, threadId } = await setupTillComment(
+        server
+      );
+      const resp = await server.inject({
+        method: "PUT",
+        url: `/threads/${threadId}/comments/${commentId}/likes`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      expect(resp.statusCode).toEqual(200);
+      const respJson = JSON.parse(resp.payload);
+      expect(respJson.status).toEqual("success");
     });
   });
 });

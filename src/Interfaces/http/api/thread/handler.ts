@@ -4,6 +4,7 @@ import { Container } from "../../../../Infrastructures/container";
 import { IRequest, Payload } from "../../../../Commons/types";
 import CommentUseCase from "../../../../Applications/use_case/CommentUseCase";
 import ReplyUseCase from "../../../../Applications/use_case/ReplyUseCase";
+import CommentLikesUseCase from "../../../../Applications/use_case/CommentLikesUseCase";
 
 class ThreadHandler {
   private container: Container;
@@ -17,6 +18,7 @@ class ThreadHandler {
     this.postReplyHandler = this.postReplyHandler.bind(this);
     this.deleteReplyByIdHandler = this.deleteReplyByIdHandler.bind(this);
     this.getThreadHandler = this.getThreadHandler.bind(this);
+    this.putCommentLikeHandler = this.putCommentLikeHandler.bind(this);
   }
 
   async postThreadHandler(request: IRequest, h: ResponseToolkit) {
@@ -125,6 +127,20 @@ class ThreadHandler {
         data: {
           thread,
         },
+      })
+      .code(200);
+  }
+
+  async putCommentLikeHandler(request: IRequest, h: ResponseToolkit) {
+    const commentLikeUseCase = this.container.getInstance(
+      CommentLikesUseCase.name
+    ) as CommentLikesUseCase;
+    const { threadId, commentId } = request.params;
+    const { id: userId } = request.auth.credentials;
+    await commentLikeUseCase.toogleLikes({ threadId, commentId, userId });
+    return h
+      .response({
+        status: "success",
       })
       .code(200);
   }
